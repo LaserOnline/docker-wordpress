@@ -1,0 +1,38 @@
+services:
+  wordpress:
+    container_name: wordpress
+    build:
+      context: .
+      dockerfile: dockerfile.wordpress
+    ports:
+      - "8000:80"
+    volumes:
+      - "${WORDPRESS_VOLUMES_PATH}:/var/www/html"
+    depends_on:
+      - mysql
+    env_file:
+      - .env
+
+  mysql:
+    container_name: mysql
+    build:
+      context: .
+      dockerfile: dockerfile.mysql
+    volumes:
+      - "${MYSQL_VOLUMES_PATH}:/var/lib/mysql"
+    env_file:
+      - .env
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    build:
+      context: .
+      dockerfile: dockerfile.phpmyadmin
+    environment:
+      PMA_HOST: mysql
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    ports:
+      - "8080:80"
